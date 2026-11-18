@@ -60,6 +60,35 @@ class FlyingCreature(Creature):
             target.hp = 0
         print(f"{target.name} HP is now {target.hp}")
 
+
+class FireCreature(Creature):
+    def __init__(self, name, hp, attack_power, fire_level):
+        super().__init__(name, hp, attack_power)
+
+        if 0 <= fire_level <= 100:
+            self.fire_level = fire_level
+        else:
+            raise ValueError("Fire level must be between 0 and 100")
+
+    def emit_fire(self, new_fire_level):
+        if 0 <= new_fire_level <= 100:
+            self.fire_level = new_fire_level
+            print(f"{self.name} changes fire level to {self.fire_level}!")
+        else:
+            print("Fire level must be between 0 and 100.")
+
+    def attack(self, target):
+        if not self.is_alive():
+            print(f"{self.name} cannot attack because it is defeated.")
+            return
+
+        fire_damage = self.fire_level // 10
+        total_damage = self.attack_power + fire_damage
+
+        print(f"{self.name} attacks {target.name} with fire for {total_damage} damage!")
+
+        target.hp -= total_damage
+
 if __name__ == "__main__":
     print("=== Creature Class Tests ===\n")
 
@@ -145,3 +174,25 @@ if __name__ == "__main__":
     print()
     print("=== Tests Completed ===")
     print()
+    
+
+    print("=== FireCreature Tests ===\n")
+    Dragon = FireCreature("Dragon", 100, 20, 10)
+    print(f"Dragon fire level should be 10 → Actual: {Dragon.fire_level}")
+
+    Dragon.emit_fire(80)
+    print(f"Fire level should be 80 → Actual: {Dragon.fire_level}")
+
+    dummy = Creature("Practice Dummy", 40, 0)
+
+    Dragon.attack(dummy)
+    print(f"Dummy HP should be 32 → Actual: {dummy.hp}")
+
+    dummy.attack(Dragon)
+    print(f"Dragon HP should be 100 → Actual: {Dragon.hp}")
+
+    Dragon.emit_fire(150)
+    print(f"Fire level should remain 80 → Actual: {Dragon.fire_level}")
+
+    print()
+    print("=== Tests Completed ===")
